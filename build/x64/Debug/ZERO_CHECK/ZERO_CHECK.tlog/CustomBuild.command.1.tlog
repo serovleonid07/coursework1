@@ -1,0 +1,10 @@
+^C:\USERS\USER\COURSEWORK1\BUILD\CMAKEFILES\B802D3DB6886A022C7AFDE3F47AA4ADC\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/user/coursework1/main_code -BC:/Users/user/coursework1/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/user/coursework1/build/FifteenPuzzle.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
