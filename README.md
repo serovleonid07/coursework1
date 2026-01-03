@@ -49,6 +49,6 @@ o	Выйти из игры
 	Игрок будет взаимодействовать с системой (игрой) в согласно диаграмме взаимодействий:
 
 #### Взаимодействие игрока с игрой
-![Взаимодействие игрока с игрой](https://github.com/serovleonid07/coursework1/blob/main/resources/BS_interactions.png))
+![Взаимодействие игрока с игрой](https://github.com/serovleonid07/coursework1/blob/main/resources/UML.png))
 #### Блок схема, работы системы
 ![Блок схема, работы системы](https://github.com/serovleonid07/coursework1/blob/main/resources/BS_interactions.png)
