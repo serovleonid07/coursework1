@@ -49,6 +49,12 @@ o	Выйти из игры
 	Игрок будет взаимодействовать с системой (игрой) в согласно диаграмме взаимодействий:
 
 #### Взаимодействие игрока с игрой
-![Взаимодействие игрока с игрой](https://github.com/serovleonid07/coursework1/blob/main/resources/UML.png))
+![Взаимодействие игрока с игрой](https://github.com/serovleonid07/coursework1/blob/main/resources/UML.png)
 #### Блок схема, работы системы
 ![Блок схема, работы системы](https://github.com/serovleonid07/coursework1/blob/main/resources/BS_interactions.png)
+
+## Этапы работы с кодом и тестированием
+### 1. (04.01.2026) Создание основы (меню, выбор сложности, сама игра)
+![Блок схема, работы системы](https://github.com/serovleonid07/coursework1/blob/main/resources/04.01/1.png)
+![Блок схема, работы системы](https://github.com/serovleonid07/coursework1/blob/main/resources/04.01/2.png)
+![Блок схема, работы системы](https://github.com/serovleonid07/coursework1/blob/main/resources/04.01/3.png)
