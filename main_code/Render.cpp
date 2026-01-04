@@ -72,8 +72,6 @@ void Render::drawBoard(const GameLogic& game) {
         winText.setPosition(225.0f, 250.0f);
         window.draw(winText);
     }
-
-    window.display();
 }
 
 void Render::run(GameLogic& game) {
