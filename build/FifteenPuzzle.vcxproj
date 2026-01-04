@@ -386,9 +386,11 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <ItemGroup>
     <ClCompile Include="C:\Users\user\coursework1\main_code\main.cpp" />
     <ClCompile Include="C:\Users\user\coursework1\main_code\GameLogic.cpp" />
-    <ClCompile Include="C:\Users\user\coursework1\main_code\Render.cpp" />
     <ClInclude Include="C:\Users\user\coursework1\main_code\GameLogic.h" />
+    <ClCompile Include="C:\Users\user\coursework1\main_code\Render.cpp" />
     <ClInclude Include="C:\Users\user\coursework1\main_code\Render.h" />
+    <ClCompile Include="C:\Users\user\coursework1\main_code\Menu.cpp" />
+    <ClInclude Include="C:\Users\user\coursework1\main_code\Menu.h" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

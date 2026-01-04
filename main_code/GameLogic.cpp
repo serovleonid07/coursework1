@@ -55,3 +55,17 @@ bool GameLogic::isSolved() const {
     }
     return true;
 }
+
+void GameLogic::init(int newSize) {
+    size = newSize;
+    field.clear(); // Очищаем старое поле
+    field.resize(size * size);
+    
+    // Заполняем поле числами от 1 до N-1, в конце 0
+    for (int i = 0; i < size * size; ++i) {
+        field[i] = (i + 1) % (size * size);
+    }
+    
+    emptyPos = size * size - 1; // Пустая клетка всегда в конце
+    moves = 0;                  // Сбрасываем счетчик шагов
+}

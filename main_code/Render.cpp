@@ -1,108 +1,146 @@
 #include "Render.h"
 #include <string>
 
-Render::Render() {
-    // Создаем окно (ширина 450, высота 550 для места под счетчик)
-    window.create(sf::VideoMode(450, 550), "Coursework");
+Render::Render() : currentState(GameState::MENU) {
+    window.create(sf::VideoMode(450, 550), "15 Puzzle - Coursework");
     window.setFramerateLimit(60);
 
-    // Загрузка шрифта. Файл должен лежать в папке с .exe или в корне проекта
+    // Загрузка шрифта с проверкой
     if (!font.loadFromFile("arial.ttf")) {
-        // Если шрифт не найден, можно вывести ошибку в консоль
-        // Для курсовой лучше добавить проверку
+        font.loadFromFile("C:/Windows/Fonts/arial.ttf");
     }
 }
 
 void Render::drawBoard(const GameLogic& game) {
-    window.clear(sf::Color(45, 45, 48)); // Темно-серый фон (стиль VS)
+    window.clear(sf::Color(45, 45, 48));
 
-    float fTileSize = static_cast<float>(tileSize);
-    float fMargin = static_cast<float>(margin);
+    // Динамический расчет размера плитки в зависимости от выбранной сложности (3, 4 или 5)
+    float currentTileSize = 450.0f / game.getSize(); 
 
     for (int i = 0; i < game.getSize() * game.getSize(); ++i) {
         int val = game.getTile(i);
-        
-        // Пропускаем отрисовку пустой клетки (ноль)
         if (val == 0) continue;
 
-        // Рисуем плитку
-        sf::RectangleShape tile(sf::Vector2f(fTileSize - fMargin, fTileSize - fMargin));
-        float posX = static_cast<float>(i % game.getSize()) * fTileSize + fMargin / 2.0f;
-        float posY = static_cast<float>(i / game.getSize()) * fTileSize + fMargin / 2.0f;
+        // Отрисовка плитки
+        sf::RectangleShape tile(sf::Vector2f(currentTileSize - margin, currentTileSize - margin));
+        float posX = static_cast<float>(i % game.getSize()) * currentTileSize + margin / 2.0f;
+        float posY = static_cast<float>(i / game.getSize()) * currentTileSize + margin / 2.0f;
         
         tile.setPosition(posX, posY);
-        tile.setFillColor(sf::Color(0, 122, 204)); // Синий цвет плиток
-        tile.setOutlineThickness(2.0f);
-        tile.setOutlineColor(sf::Color::White);
+        tile.setFillColor(sf::Color(0, 122, 204));
 
-        // Настраиваем текст (номер плитки)
-        sf::Text text(std::to_string(val), font, 36);
+        // Отрисовка цифры (размер шрифта подстраивается под количество плиток)
+        int fontSize = (game.getSize() >= 5) ? 24 : 36;
+        sf::Text text(std::to_string(val), font, fontSize);
         text.setFillColor(sf::Color::White);
         
-        // Центрирование текста внутри плитки
         sf::FloatRect textRect = text.getLocalBounds();
         text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-        text.setPosition(posX + (fTileSize - fMargin) / 2.0f, posY + (fTileSize - fMargin) / 2.0f);
+        text.setPosition(posX + (currentTileSize - margin) / 2.0f, posY + (currentTileSize - margin) / 2.0f);
 
         window.draw(tile);
         window.draw(text);
     }
 
-    // Отрисовка интерфейса (счетчик ходов)
-    sf::Text info("Moves: " + std::to_string(game.getMoves()), font, 24);
-    info.setPosition(20.0f, 480.0f);
-    info.setFillColor(sf::Color::Yellow);
+    // Информационная панель внизу
+    sf::Text info("Moves: " + std::to_string(game.getMoves()) + "  [ESC] to Level Select", font, 20);
+    info.setPosition(20.0f, 500.0f);
     window.draw(info);
 
-    sf::Text hint("Press 'R' to Restart", font, 18);
-    hint.setPosition(20.0f, 515.0f);
-    hint.setFillColor(sf::Color(200, 200, 200));
-    window.draw(hint);
-
-    // Сообщение о победе
     if (game.isSolved() && game.getMoves() > 0) {
-        sf::RectangleShape overlay(sf::Vector2f(450.0f, 550.0f));
-        overlay.setFillColor(sf::Color(0, 0, 0, 150)); // Полупрозрачный фон
-        window.draw(overlay);
-
-        sf::Text winText("VICTORY!", font, 60);
-        winText.setFillColor(sf::Color::Green);
-        sf::FloatRect tr = winText.getLocalBounds();
-        winText.setOrigin(tr.left + tr.width / 2.0f, tr.top + tr.height / 2.0f);
-        winText.setPosition(225.0f, 250.0f);
-        window.draw(winText);
+        sf::Text win("YOU WIN!", font, 50);
+        win.setFillColor(sf::Color::Green);
+        win.setPosition(110.0f, 220.0f);
+        window.draw(win);
     }
 }
 
 void Render::run(GameLogic& game) {
-    game.shuffle(); // Перемешиваем при старте
+    Menu menu(450.0f, 550.0f, font);
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            if (event.type == sf::Event::Closed) window.close();
 
-            // Обработка клика мыши
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    int px = event.mouseButton.x / tileSize;
-                    int py = event.mouseButton.y / tileSize;
-                    
-                    if (px < game.getSize() && py < game.getSize()) {
-                        game.move(py * game.getSize() + px);
+            // Координаты мыши для кликов
+            sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+            // 1. ЛОГИКА ГЛАВНОГО МЕНЮ
+            if (currentState == GameState::MENU) {
+                if (event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::Up) menu.moveUp(currentState);
+                    if (event.key.code == sf::Keyboard::Down) menu.moveDown(currentState);
+                    if (event.key.code == sf::Keyboard::Enter) {
+                        int choice = menu.getPressedItem();
+                        if (choice == 0) { currentState = GameState::DIFFICULTY_SELECT; menu.resetSelection(); }
+                        if (choice == 1) currentState = GameState::ABOUT;
+                        if (choice == 2) window.close();
                     }
+                }
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    int click = menu.getClickedItem(mousePos, currentState);
+                    if (click == 0) { currentState = GameState::DIFFICULTY_SELECT; menu.resetSelection(); }
+                    else if (click == 1) currentState = GameState::ABOUT;
+                    else if (click == 2) window.close();
+                }
+            }
+            
+            // 2. ЛОГИКА ВЫБОРА СЛОЖНОСТИ
+            else if (currentState == GameState::DIFFICULTY_SELECT) {
+                if (event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::Up) menu.moveUp(currentState);
+                    if (event.key.code == sf::Keyboard::Down) menu.moveDown(currentState);
+                    if (event.key.code == sf::Keyboard::Enter) {
+                        int choice = menu.getPressedItem();
+                        if (choice == 0) { game.init(3); game.shuffle(); currentState = GameState::PLAYING; }
+                        else if (choice == 1) { game.init(4); game.shuffle(); currentState = GameState::PLAYING; }
+                        else if (choice == 2) { game.init(5); game.shuffle(); currentState = GameState::PLAYING; }
+                        else if (choice == 3) { currentState = GameState::MENU; menu.resetSelection(); }
+                    }
+                }
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    int click = menu.getClickedItem(mousePos, currentState);
+                    if (click == 0) { game.init(3); game.shuffle(); currentState = GameState::PLAYING; }
+                    else if (click == 1) { game.init(4); game.shuffle(); currentState = GameState::PLAYING; }
+                    else if (click == 2) { game.init(5); game.shuffle(); currentState = GameState::PLAYING; }
+                    else if (click == 3) { currentState = GameState::MENU; menu.resetSelection(); }
                 }
             }
 
-            // Перезапуск на клавишу R
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::R) {
-                    game.shuffle();
+            // 3. ЛОГИКА САМОЙ ИГРЫ
+            else if (currentState == GameState::PLAYING) {
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    float curTileSize = 450.0f / game.getSize();
+                    int x = static_cast<int>(event.mouseButton.x / curTileSize);
+                    int y = static_cast<int>(event.mouseButton.y / curTileSize);
+                    if (x < game.getSize() && y < game.getSize()) game.move(y * game.getSize() + x);
                 }
+                // Назад к выбору уровней по ESC
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    currentState = GameState::DIFFICULTY_SELECT;
+                    menu.resetSelection();
+                }
+            }
+
+            // 4. ЭКРАН "О ПРОГРАММЕ"
+            else if (currentState == GameState::ABOUT) {
+                if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed)
+                    currentState = GameState::MENU;
             }
         }
 
-        drawBoard(game);
+        // Рендеринг в зависимости от состояния
+        window.clear(sf::Color(45, 45, 48));
+        if (currentState == GameState::MENU || currentState == GameState::DIFFICULTY_SELECT) {
+            menu.draw(window, currentState);
+        } else if (currentState == GameState::PLAYING) {
+            drawBoard(game);
+        } else if (currentState == GameState::ABOUT) {
+            sf::Text t("Coursework: 15 Puzzle\nAuthor: Student\n\nClick to return...", font, 30);
+            t.setPosition(50, 150);
+            window.draw(t);
+        }
+        window.display();
     }
 }

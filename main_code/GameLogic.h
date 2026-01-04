@@ -1,10 +1,5 @@
-//GameLogic.h — Заголовочный файл логики
-
 #pragma once
 #include <vector>
-#include <algorithm>
-#include <random>
-#include <ctime>
 
 class GameLogic {
 private:
@@ -15,6 +10,10 @@ private:
 
 public:
     GameLogic(int boardSize = 4);
+    
+    // ДОБАВЬТЕ ЭТУ СТРОКУ:
+    void init(int newSize); 
+
     void shuffle();
     bool move(int pos);
     bool isSolved() const;
@@ -23,5 +22,4 @@ public:
     int getTile(int index) const { return field[index]; }
     int getSize() const { return size; }
     int getMoves() const { return moves; }
-    void resetMoves() { moves = 0; }
 };

@@ -10,12 +10,18 @@
     <ClCompile Include="C:\Users\user\coursework1\main_code\Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\user\coursework1\main_code\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\user\coursework1\main_code\GameLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\user\coursework1\main_code\Render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\coursework1\main_code\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

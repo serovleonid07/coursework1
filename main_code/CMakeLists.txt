@@ -11,7 +11,15 @@ set(SFML_DIR "C:/Users/user/SFML-2.6.1/lib/cmake/SFML")
 find_package(SFML 2.6.1 COMPONENTS graphics window system REQUIRED)
 
 # Исходные файлы
-add_executable(FifteenPuzzle main.cpp GameLogic.cpp Render.cpp GameLogic.h Render.h)
+add_executable(FifteenPuzzle 
+    main.cpp 
+    GameLogic.cpp 
+    GameLogic.h
+    Render.cpp 
+    Render.h
+    Menu.cpp 
+    Menu.h
+)
 
 # Линковка (компоновка) — ЭТО РЕШАЕТ ВАШУ ОШИБКУ
 target_link_libraries(FifteenPuzzle sfml-graphics sfml-window sfml-system)
